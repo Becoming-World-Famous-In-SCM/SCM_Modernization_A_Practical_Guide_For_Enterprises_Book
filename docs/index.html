@@ -1,78 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Menu Page with Sub-menus</title>
-<style>
-:root{
---bg:#f4f6f8;
---nav:#0f1724;
---muted:#94a3b8;
---accent:#2563eb;
-}
-*{box-sizing:border-box}
-body {
-margin: 0;
-font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
-background: var(--bg);
-color:#0b1220;
-}
-/* NAV */
-nav{
-background:var(--nav);
-color:#fff;
-padding: 0 20px;
-position:sticky;
-top:0;
-z-index:100;
-box-shadow:0 2px 6px rgba(2,6,23,0.15);
-}
-nav .nav-inner{
-max-width:1100px;
-margin:0 auto;
-display:flex;
-align-items:center;
-justify-content:space-between;
-height:64px;
-}
-.brand{font-weight:700; font-size:18px; letter-spacing:0.3px}
-/* main menu */
-.menu{display:flex; gap:8px; align-items:center}
-.menu > li{list-style:none; position:relative}
-.menu > li > a{
-display:inline-block;
-padding:10px 14px;
-color:#fff;
-text-decoration:none;
-border-radius:6px;
-font-size:15px;
-transition:background .15s, transform .08s;
-}
-.menu > li > a:focus, .menu > li > a:hover{background:rgba(255,255,255,0.06); transform:translateY(-1px)}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Menu Page with Sub-menus</title>
+  <style>
+    :root{
+      --bg:#f4f6f8;
+      --nav:#0f1724;
+      --muted:#94a3b8;
+      --accent:#2563eb;
+    }
+    *{box-sizing:border-box}
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color:#0b1220;
+    }
+    /* NAV */
+    nav{
+      background:var(--nav);
+      color:#fff;
+      padding: 0 20px;
+      position:sticky;
+      top:0;
+      z-index:100;
+      box-shadow:0 2px 6px rgba(2,6,23,0.15);
+    }
+    nav .nav-inner{
+      max-width:1100px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      height:64px;
+    }
+    .brand{font-weight:700; font-size:18px; letter-spacing:0.3px}
+    /* main menu */
+    .menu{display:flex; gap:8px; align-items:center}
+    .menu > li{list-style:none; position:relative}
+    .menu > li > a{
+      display:inline-block;
+      padding:10px 14px;
+      color:#fff;
+      text-decoration:none;
+      border-radius:6px;
+      font-size:15px;
+      transition:background .15s, transform .08s;
+    }
+    .menu > li > a:focus, .menu > li > a:hover{background:rgba(255,255,255,0.06); transform:translateY(-1px)}
 
+    /* submenu (dropdown) */
+    .submenu{
+      position:absolute;
+      left:0;
+      top:56px;
+      min-width:200px;
+      background:#fff;
+      color:#0b1220;
+      border-radius:8px;
+      padding:6px 6px;
+      box-shadow:0 8px 20px rgba(2,6,23,0.12);
+      opacity:0;
+      transform:translateY(6px);
+      pointer-events:none;
+      transition:opacity .18s, transform .18s;
+    }
+    .menu > li:focus-within .submenu, .menu > li:hover .submenu{
+      opacity:1; transform:translateY(0); pointer-events:auto;
+    }
+    .submenu a{
+      display:block;
+      padding:8px 12px;
+      color:#0b1220;
+      text-decoration:none;
+      border-radius:6px;
+      font-size:14px;
+    }
+    .submenu a:hover{background:#f1f5f9}
 
-/* submenu (dropdown) */
-.submenu{
-position:absolute;
-left:0;
-top:56px;
-min-width:200px;
-background:#fff;
-color:#0b1220;
-border-radius:8px;
-padding:6px 6px;
-box-shadow:0 8px 20px rgba(2,6,23,0.12);
-opacity:0;
-transform:translateY(6px);
-pointer-events:none;
-transition:opacity .18s, transform .18s;
-}
-.menu > li:focus-within .submenu, .menu > li:hover .submenu{
-opacity:1; transform:translateY(0); pointer-events:auto;
-}
-.submenu a{
-display:block;
-padding:8px 12px;
-color:#0b1220;
+    /* simple responsive: collapse menu into a hamburger on small screens */
+    .hamburger{display:none; background:transparent; border:0; color:#fff; font-size:20px}
+    @media (max-width:800px){
+      .menu{display:none; position:absolute; left:0; right:0; top:64px; background:var(--nav); flex-direction:column; padding:12px}
+      .menu.show{display:flex}
+      .hamburger{display:inline-block}
+      .nav-inner{gap:10px}
+      .submenu{position:relative; top:0; box-shadow:none; background:transparent; padding:0}
+      .submenu a{color:#fff}
+    }
+
+    /* content area */
+    .content{max-width:1100px; margin:28px auto; padding:24px;}
+    .card{background:#fff; padding:20px; border-radius:10px; box-shadow:0 6px 18px rgba(15,23,36,0.04)}
+
+    /* helper */
+    .muted{color:var(--muted)}
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <div class="brand">My Website</div>
+      <button class="hamburger" aria-expanded="false" aria-controls="main-menu" id="hamburger">☰</button>
+      <ul class="menu" id="main-menu">
+        <li>
+          <a href="home.html">Home</a>
+          <div class="submenu" aria-hidden="true">
+            <a href="home.html">Main Home</a>
+            <a href="home-features.html">Features</a>
+            <a href="home-pricing.html">Pricing</a>
+          </div>
+        </li>
+
+        <li>
+          <a href="about.html">About</a>
+          <div class="submenu" aria-hidden="true">
+            <a href="about-team.html">Our Team</a>
+            <a href="about-careers.html">Careers</a>
+            <a href="about-story.html">Our Story</a>
+          </div>
+        </li>
+
+        <li>
+          <a href="services.html">Services</a>
+          <div class="submenu" aria-hidden="true">
+            <a href="services-web.html">Web Development</a>
+            <a href="services-mobile.html">Mobile Apps</a>
+            <a href="services-consulting.html">Consulting</a>
+          </div>
+        </li>
+
+        <li>
+          <a href="contact.html">Contact</a>
+          <div class="submenu" aria-hidden="true">
+            <a href="contact-support.html">Support</a>
+            <a href="contact-sales.html">Sales</a>
+            <a href="contact-locations.html">Locations</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="content">
+    <section class="card">
+      <h1>Welcome!</h1>
+      <p class="muted">This index.html contains a horizontal menu with sub-menus. Clicking any sub-menu item will navigate to its linked page (these are placeholder files: <code>home-features.html</code>, <code>about-team.html</code>, etc.).</p>
+      <p>If you'd like, I can create all those placeholder pages for you so every sub-menu link opens a working page.</p>
+    </section>
+  </main>
+
+  <script>
+    // simple hamburger toggle for small screens
+    const hamb = document.getElementById('hamburger');
+    const menu = document.getElementById('main-menu');
+    hamb && hamb.addEventListener('click', () => {
+      const expanded = hamb.getAttribute('aria-expanded') === 'true';
+      hamb.setAttribute('aria-expanded', String(!expanded));
+      menu.classList.toggle('show');
+    });
+
+    // accessibility: hide aria-hidden false/true based on hover/focus
+    document.querySelectorAll('.menu > li').forEach(item => {
+      const submenu = item.querySelector('.submenu');
+      item.addEventListener('mouseenter', () => submenu && submenu.setAttribute('aria-hidden','false'));
+      item.addEventListener('mouseleave', () => submenu && submenu.setAttribute('aria-hidden','true'));
+      // keyboard
+      item.querySelectorAll('a')[0].addEventListener('focus', () => submenu && submenu.setAttribute('aria-hidden','false'));
+      item.addEventListener('focusout', (e) => {
+        // if focus leaves the entire item, hide submenu
+        if(!item.contains(e.relatedTarget)) submenu && submenu.setAttribute('aria-hidden','true');
+      });
+    });
+  </script>
+</body>
 </html>
